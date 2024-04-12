@@ -1,0 +1,41 @@
+import os
+import shutil
+
+def organize_files(directory):
+    # Define file type mappings
+    file_types = {
+        'Images': ['.jpg', '.jpeg', '.png', '.gif', '.bmp'],
+        'Documents': ['.doc', '.docx', '.pdf', '.txt', '.ppt', '.xls', '.xlsx'],
+        'Videos': ['.mp4', '.avi', '.mkv', '.mov', '.flv'],
+        'Music': ['.mp3', '.wav', '.flac'],
+        'Archives': ['.zip', '.rar', '.tar', '.gz'],
+        'Others': []  # Default category for other file types
+    }
+
+    # Create folders for each file type
+    for folder_name in file_types:
+        os.makedirs(os.path.join(directory, folder_name), exist_ok=True)
+
+    # Traverse directory and move files to respective folders
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            src_path = os.path.join(root, file)
+            file_ext = os.path.splitext(file)[1].lower()
+
+            # Determine file type
+            file_type = 'Others'
+            for category, extensions in file_types.items():
+                if file_ext in extensions:
+                    file_type = category
+                    break
+
+            # Move file to respective folder
+            dest_path = os.path.join(directory, file_type, file)
+            shutil.move(src_path, dest_path)
+
+    print("Files organized successfully!")
+
+# Usage example
+if __name__ == "__main__":
+    directory_to_organize = input("Enter the directory path to organize: ")
+    organize_files(directory_to_organize)
